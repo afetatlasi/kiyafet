@@ -1,0 +1,36 @@
+name: Arayüz Önizlemesini Yayınla
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - static/**
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Yalnız arayüz dosyalarını hazırla
+        run: |
+          mkdir -p _site/static
+          cp index.html _site/index.html
+          cp static/style.css static/app.js _site/static/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - uses: actions/deploy-pages@v4
+        id: deployment
