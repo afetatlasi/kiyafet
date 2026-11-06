@@ -4,6 +4,8 @@
 
 Bu proje AFAD'ın resmî yayımlanmış yazılımı değildir. Kuruma özel bir uygulama geliştirmesidir.
 
+> **Arayüzü açmak:** Bu GitHub adresi kaynak kod deposudur; çalışan uygulama adresi değildir. Ana sayfa `static/index.html` dosyasındadır ve Python sunucusu tarafından `/` adresinde sunulur. Aşağıdaki kurulumdan sonra `http://127.0.0.1:8000` adresini açın. GitHub Pages yalnız statik dosya yayımlar; bu uygulamanın giriş, API ve veritabanını çalıştıramaz. İnternet üzerinden kullanım için HTTPS sunucu kurulumu gerekir.
+
 ## Kıyafet ve ekipman kuralları
 
 - Her personel her **takvim yılında bir yazlık ve bir kışlık takım** talep edebilir. İki takımda da ayakkabı bulunur. Hak ediş yılı Türkiye saat dilimiyle belirlenir.
@@ -19,8 +21,8 @@ Bu proje AFAD'ın resmî yayımlanmış yazılımı değildir. Kuruma özel bir 
 ## Kurulum
 
 ```bash
-git clone https://github.com/afetatlasi/k-yafet.git
-cd k-yafet
+git clone https://github.com/afetatlasi/kiyafet.git
+cd kiyafet
 python3 --version  # 3.12 veya üzeri
 python3 server.py --init-admin
 python3 server.py
