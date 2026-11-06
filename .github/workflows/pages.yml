@@ -22,15 +22,33 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Pages etkinliğini kontrol et
+        id: pages
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.repos.getPages(context.repo);
+              core.setOutput('enabled', 'true');
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              core.setOutput('enabled', 'false');
+              core.warning('GitHub Pages etkin değil. Settings > Pages > Source: GitHub Actions seçip bu iş akışını yeniden çalıştırın.');
+              await core.summary.addHeading('GitHub Pages kurulumu gerekli').addRaw('Settings → Pages → Source: GitHub Actions seçin, ardından bu iş akışını Run workflow ile yeniden çalıştırın. Henüz site yayımlanmadı.').write();
+            }
       - uses: actions/configure-pages@v5
+        if: steps.pages.outputs.enabled == 'true' 
       - name: Yalnız arayüz dosyalarını hazırla
+        if: steps.pages.outputs.enabled == 'true' 
         run: |
           mkdir -p _site/static
           cp index.html _site/index.html
           cp static/style.css static/app.js _site/static/
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
+        if: steps.pages.outputs.enabled == 'true' 
         with:
           path: _site
       - uses: actions/deploy-pages@v4
+        if: steps.pages.outputs.enabled == 'true' 
         id: deployment
