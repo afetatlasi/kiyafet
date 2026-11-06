@@ -18,6 +18,16 @@ Bu proje AFAD'ın resmî yayımlanmış yazılımı değildir. Kuruma özel bir 
 - Süresinden önce yıpranan malzeme için **Zimmetler → Erken Yıpranma / Yenileme** kullanılır. Teslim onaylı mevcut zimmet ve gerekçe gerekir. Bir zimmete aynı anda bir açık yenileme talebi açılabilir. Yenileme normal yıllık hakkı tüketmez ve onay sürecini atlamaz. Eski zimmet otomatik silinmez; il sorumlusu ayrıca iade alır.
 - Hasar, eskime ve kayıp bildirimleri ayrıca kaydedilir.
 
+## GitHub Pages arayüz önizlemesi
+
+Depo kökündeki `index.html` arayüzün statik giriş noktasıdır. GitHub depo adresi dosyaları gösterir; HTML dosyasını uygulama olarak çalıştırmaz.
+
+1. GitHub deposunda **Settings → Pages → Build and deployment → Source: GitHub Actions** seçin.
+2. **Actions → Arayüz Önizlemesini Yayınla → Run workflow** çalıştırın.
+3. Başarılı yayının ardından **Settings → Pages** ekranındaki ziyaret bağlantısını kullanın. Standart proje adresi `https://afetatlasi.github.io/kiyafet/` olur; bu adres yayının başarılı olduğu doğrulanmadan çalışan bağlantı sayılmaz.
+
+Pages iş akışı yalnız kök ana sayfa, CSS ve JavaScript dosyalarını yayımlar. Kaynak kodu, veritabanı ve diğer sunucu dosyalarını yayın paketine koymaz. Önizlemede giriş alanları kapalıdır ve API çağrısı yapılmaz. Gerçek hesap, talep, stok ve zimmet işlemleri için aşağıdaki Python sunucu kurulumunu kullanın. Üretim sunucusu `static/index.html` dosyasını sunmaya devam eder.
+
 ## Kurulum
 
 ```bash
