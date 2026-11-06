@@ -1,10 +1,10 @@
 # AFAD Kıyafet, Ekipman ve Zimmet Yönetimi
 
-81 il ve Başkanlık için personel talebi, onay, depo, sevkiyat ve zimmet süreçlerini yöneten web uygulaması. Python 3.12+ ve SQLite kullanır; harici Python/JavaScript paketi veya internetten yüklenen arayüz bileşeni gerekmez. Veriler tarayıcıda değil sunucuda saklanır.
+81 il ve Başkanlık için personel talebi, onay, depo, sevkiyat ve zimmet süreçlerini yöneten web uygulaması. İki çalışma biçimi vardır: GitHub Pages üzerinde şifresiz, tek tarayıcıda kayıt tutan yerel sürüm; Python 3.12+ ve SQLite ile gerçek giriş ve sunucuda kayıt tutan sürüm. Harici Python/JavaScript paketi veya internetten yüklenen arayüz bileşeni gerekmez.
 
 Bu proje AFAD'ın resmî yayımlanmış yazılımı değildir. Kuruma özel bir uygulama geliştirmesidir.
 
-> **Arayüzü açmak:** Bu GitHub adresi kaynak kod deposudur; çalışan uygulama adresi değildir. Ana sayfa `static/index.html` dosyasındadır ve Python sunucusu tarafından `/` adresinde sunulur. Aşağıdaki kurulumdan sonra `http://127.0.0.1:8000` adresini açın. GitHub Pages yalnız statik dosya yayımlar; bu uygulamanın giriş, API ve veritabanını çalıştıramaz. İnternet üzerinden kullanım için HTTPS sunucu kurulumu gerekir.
+> **GitHub Pages sürümü:** Yayın tamamlandıktan sonra https://afetatlasi.github.io/kiyafet/ adresi doğrudan kontrol panelini açar. Kullanıcı adı veya şifre gerekmez. Kayıtlar yalnız kullandığınız tarayıcıda saklanır; diğer kişilerle/bilgisayarlarla ortak veri paylaşımı yoktur. Yedek almayı unutmayın. Python sunuculu sürümde gerçek giriş ve yetkilendirme korunur.
 
 ## Kıyafet ve ekipman kuralları
 
@@ -18,17 +18,22 @@ Bu proje AFAD'ın resmî yayımlanmış yazılımı değildir. Kuruma özel bir 
 - Süresinden önce yıpranan malzeme için **Zimmetler → Erken Yıpranma / Yenileme** kullanılır. Teslim onaylı mevcut zimmet ve gerekçe gerekir. Bir zimmete aynı anda bir açık yenileme talebi açılabilir. Yenileme normal yıllık hakkı tüketmez ve onay sürecini atlamaz. Eski zimmet otomatik silinmez; il sorumlusu ayrıca iade alır.
 - Hasar, eskime ve kayıp bildirimleri ayrıca kaydedilir.
 
-## GitHub Pages arayüz önizlemesi
+## GitHub Pages ile şifresiz kullanım
 
-Depo kökündeki `index.html` arayüzün statik giriş noktasıdır. GitHub depo adresi dosyaları gösterir; HTML dosyasını uygulama olarak çalıştırmaz.
+1. https://afetatlasi.github.io/kiyafet/ adresini açın. Doğrudan yönetim paneli görünür.
+2. Üstteki işlem rolü **Sistem Yöneticisi** iken **Personel → Kullanıcı Ekle** ile personel kaydedin. Yerel sürüm kullanıcı adı/parola istemez; sicil, il ve görev bilgileriyle kayıt yapılır.
+3. Üstten **Personel** çalışma rolünü ve personeli seçin. **Bilgilerim → Bedenleri düzenle** ile bedenleri kaydedin.
+4. **Yıllık Kıyafet Hakkı** ekranından ayakkabı dahil yazlık/kışlık takımı veya **Yeni Talep** ile ihtiyaç ekipmanını talep edin.
+5. Üstteki roller arasında geçerek il incelemesi, müdür onayı, Başkanlık tahsisi, sevkiyat, teslim alma, zimmet ve iade işlemlerini yapın. Bu seçici bir güvenlik veya giriş sistemi değildir; tek kişinin tüm süreci yönetmesini sağlar.
+6. Düzenli olarak **Yedek Al** düğmesiyle JSON yedeği indirin. Başka tarayıcıya taşımak için **Yedek Yükle** kullanın. Yükleme, o tarayıcıdaki mevcut kayıtları değiştirir; önce mevcut kayıtları yedekleyin.
 
-1. GitHub deposunda **Settings → Pages → Build and deployment → Source: GitHub Actions** seçin.
-2. **Actions → Arayüz Önizlemesini Yayınla → Run workflow** çalıştırın.
-3. Başarılı yayının ardından **Settings → Pages** ekranındaki ziyaret bağlantısını kullanın. Standart proje adresi `https://afetatlasi.github.io/kiyafet/` olur; bu adres yayının başarılı olduğu doğrulanmadan çalışan bağlantı sayılmaz.
+**Sınırlar:** Veriler localStorage'da saklanır; gizli pencerede kalıcı olmayabilir ve tarayıcı verileri silinince kaybolur. Verileri tek sekmede yönetin; eşzamanlı sekmelerin kayıtları otomatik birleştirilmez. Şifreleme veya gerçek erişim kontrolü yoktur. Başka personeller aynı siteyi açtığında sizin kayıtlarınızı göremez; talepler ağ üzerinden Başkanlığa gönderilmez. CSV raporları ve JSON yedekleri kendi tarayıcınızdaki kayıtları içerir. Paylaşılan cihazda kişisel veri kullanımını buna göre değerlendirin. Ortak ve çok kullanıcılı kullanım için aşağıdaki sunucu sürümünü kurun.
 
-Pages iş akışı yalnız kök ana sayfa, CSS ve JavaScript dosyalarını yayımlar. Kaynak kodu, veritabanı ve diğer sunucu dosyalarını yayın paketine koymaz. Önizlemede giriş alanları kapalıdır ve API çağrısı yapılmaz. Gerçek hesap, talep, stok ve zimmet işlemleri için aşağıdaki Python sunucu kurulumunu kullanın. Üretim sunucusu `static/index.html` dosyasını sunmaya devam eder.
+İlk yayın için **Settings → Pages → Source: GitHub Actions** seçili olmalıdır. **Actions → Şifresiz Sistemi Yayınla → Run workflow** kullanılabilir. İş akışı yalnız kök ana sayfayı ve statik arayüz dosyalarını yayımlar; Python kaynağı ve veritabanı yayın paketine girmez.
 
 ## Kurulum
+
+Bu bölüm gerçek giriş, rol yetkileri ve ortak veritabanıyla çalışan **Python sunuculu sürüm** içindir. GitHub Pages sürümünü kullanmak için bu kurulum gerekmez.
 
 ```bash
 git clone https://github.com/afetatlasi/kiyafet.git
@@ -122,6 +127,7 @@ Bu sürüm tek uygulama sunucusu ve yerel SQLite diskiyle çalışır; veritaban
 python3 -m unittest discover -s tests -v
 node --check static/app.js
 node tests/check_frontend.js
+node tests/check_local.js
 ```
 
-Testler yıllık hak ve ayakkabı dahil takım talebi, erken yıpranma yenilemesi, KBRN ihtiyacı, takvim yılı değişimi, roller/il sınırı, tam/kısmi sevkiyat, zimmet/iade, eşzamanlı stok çıkışı, gerekçeli ret, toplu talep atomikliği, oturum, CSRF, rapor kapsamı ve CSV kaçışlamasını kapsar. Testler geçici veritabanı kullanır. HTTP testleri localhost soketi açar. GitHub Actions Python testlerini, JavaScript sözdizimini ve 8 hesap üzerinden arayüz oluşturma/form sözleşmesi kontrollerini çalıştırır. Ortamdaki tarayıcı aracı mevcut olmadığından görsel/tarayıcı otomasyonu doğrulaması yapılmamıştır.
+Testler yıllık hak ve ayakkabı dahil takım talebi, erken yıpranma yenilemesi, KBRN ihtiyacı, takvim yılı değişimi, roller/il sınırı, tam/kısmi sevkiyat, zimmet/iade, eşzamanlı stok çıkışı, gerekçeli ret, toplu talep atomikliği, oturum, CSRF, rapor kapsamı ve CSV kaçışlamasını kapsar. Testler geçici veritabanı kullanır. HTTP testleri localhost soketi açar. GitHub Actions Python testlerini, JavaScript sözdizimini ve 8 hesap üzerinden arayüz oluşturma/form sözleşmesi kontrollerini çalıştırır. Şifresiz yerel sürüm için ayrıca doğrudan açılış, takım hakkı, yenileme, sevkiyat, yerel kalıcılık, yedek geri yükleme ve kayıt hatasında geri alma testleri vardır. Ortamdaki tarayıcı aracı mevcut olmadığından görsel/tarayıcı otomasyonu doğrulaması yapılmamıştır.
