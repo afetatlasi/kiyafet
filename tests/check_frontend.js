@@ -45,5 +45,19 @@ vm.runInContext(fs.readFileSync(path.join(root,'static/app.js'),'utf8'),context)
   ['workflow',{allow_local_issue:'true',allow_partial_allocation:'false',require_serial:'true'},'/api/workflow']
  ];
  for(const [kind,values,route] of cases){context.formMock={dataset:{form:kind},values};await vm.runInContext('submit(formMock)',context);const called=vm.runInContext('lastCall',context);assert.equal(called.path,route);if('quantity' in values)assert.equal(typeof called.data.quantity,'number');if(kind==='workflow')assert.equal(typeof called.data.require_serial,'boolean')}
- console.log('PASS: scoped pages render for 8 accounts; catalog, kit, renewal and workflow form contracts passed.');
+ const previewInputs=[{disabled:false},{disabled:false}];
+ const previewNodes=new Map();
+ const previewNode=()=>({...element(),setAttribute(){},insertBefore(){},append(){},querySelector(s){return previewSelect(s)},querySelectorAll(){return previewInputs}});
+ function previewSelect(s){if(!previewNodes.has(s))previewNodes.set(s,previewNode());return previewNodes.get(s)}
+ const previewDocument={body:{dataset:{staticPreview:'true'}},querySelector:previewSelect,createElement:previewNode,addEventListener(){},querySelectorAll(){return []}};
+ const previewContext=vm.createContext({document:previewDocument,console,setTimeout,clearTimeout,MutationObserver:class{observe(){}},fetch(){throw Error('Static preview must not contact an API')}});
+ vm.runInContext(fs.readFileSync(path.join(root,'static/app.js'),'utf8'),previewContext);
+ assert.equal(previewNodes.get('#login-view').hidden,false);
+ assert.ok(previewInputs.every(x=>x.disabled));
+ const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+ for(const relative of ['./static/style.css','./static/app.js']){
+  assert.ok(html.includes(relative));
+  assert.ok(new URL(relative,'https://afetatlasi.github.io/kiyafet/').pathname.startsWith('/kiyafet/static/'));
+ }
+ console.log('PASS: 8 scoped accounts and form contracts; static preview opens without API calls and uses project-relative assets.');
 })().catch(error=>{console.error(error);process.exitCode=1});
