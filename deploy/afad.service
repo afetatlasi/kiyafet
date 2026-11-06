@@ -1,0 +1,23 @@
+# Create dedicated user "afad", install source under /opt/afad and initialize
+# /var/lib/afad/afad.sqlite3 as that user before starting this service.
+[Unit]
+Description=AFAD Clothing and Equipment Management
+After=network.target
+
+[Service]
+Type=simple
+User=afad
+Group=afad
+WorkingDirectory=/opt/afad
+StateDirectory=afad
+UMask=0077
+ExecStart=/usr/bin/python3 /opt/afad/server.py --db /var/lib/afad/afad.sqlite3 --origin https://kiyafet.kurum-alaniniz.gov.tr
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/afad
+
+[Install]
+WantedBy=multi-user.target
