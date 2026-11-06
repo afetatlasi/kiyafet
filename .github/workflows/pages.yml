@@ -1,4 +1,4 @@
-name: Arayüz Önizlemesini Yayınla
+name: Şifresiz Sistemi Yayınla
 on:
   push:
     branches: [main]
@@ -43,7 +43,7 @@ jobs:
         run: |
           mkdir -p _site/static
           cp index.html _site/index.html
-          cp static/style.css static/app.js _site/static/
+          cp static/style.css static/app.js static/local-store.js _site/static/
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         if: steps.pages.outputs.enabled == 'true' 
