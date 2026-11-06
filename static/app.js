@@ -71,4 +71,14 @@ document.addEventListener('input',e=>{if(e.target.dataset.filter==='query'){quer
 document.addEventListener('change',e=>{if(e.target.dataset.filter){if(e.target.dataset.filter==='province')province=e.target.value;if(e.target.dataset.filter==='status')status=e.target.value;$('#request-rows').innerHTML=requestRows();$('#request-count').textContent=requestList().length+' talep'}if(e.target.name==='province_id'&&e.target.closest('[data-form=user]')){const pid=Number(e.target.value),s=e.target.form.elements.unit_id;s.innerHTML=option('','Birim seçilmedi')+db.units.filter(u=>u.province_id===pid).map(u=>option(u.id,u.name)).join('')}});
 // CSS bars use a fixed set of classes so the CSP never needs unsafe inline styles.
 const observer=new MutationObserver(()=>document.querySelectorAll('[data-height]').forEach(e=>{e.classList.add('bar-'+Math.round(Number(e.dataset.height)/10));e.removeAttribute('data-height')}));observer.observe($('#main'),{childList:true,subtree:true});
-load().catch(error=>{loginView();if(!error.message.includes('Oturum'))toast(error.message)});
+if(document.body?.dataset?.staticPreview==='true'){
+ loginView();
+ const view=$('#login-view');
+ const notice=document.createElement('div');notice.className='notice';notice.setAttribute('role','status');
+ notice.textContent='Arayüz önizlemesi · Giriş hizmeti henüz bu adrese bağlanmadı. Gerçek hesap ve kayıt işlemleri sunucu kurulumundan sonra kullanılabilir.';
+ view.querySelector('.login-card').insertBefore(notice,view.querySelector('form'));
+ view.querySelectorAll('input,button').forEach(el=>el.disabled=true);
+ const link=document.createElement('a');link.className='link';link.href='https://github.com/afetatlasi/kiyafet#kurulum';link.textContent='Kurulum ve çalıştırma adımları →';view.querySelector('.login-card').append(link);
+}else{
+ load().catch(error=>{loginView();if(!error.message.includes('Oturum'))toast(error.message)});
+}
